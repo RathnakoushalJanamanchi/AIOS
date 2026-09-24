@@ -11,8 +11,8 @@ It uses upstream FreeBSD and packages with an AIOS development setup; it is not 
 Build on Linux or WSL2 with QEMU system emulation, `qemu-img`, `cloud-image-utils`, `xz`, `curl`, `ssh`, and `ssh-keygen` installed:
 
 ```sh
-./scripts/build-dev-image.sh
-./scripts/run-dev-image.sh
+bash scripts/build-dev-image.sh
+bash scripts/run-dev-image.sh
 ```
 
 The GitHub Actions workflow builds the same image and publishes a seven-day downloadable workflow artifact named `indian-aios-dev-image`. Download and extract that artifact to run it locally.
@@ -53,4 +53,5 @@ The upstream kernel image is checksum-pinned. FreeBSD's binary package repositor
 - The auto-login/sudo profile is intentionally unsuitable for production.
 - No custom AIOS shell, search service, AI agent, office suite, browser branding, installer, recovery image, or update channel is included.
 - QEMU's headless CI run verifies that a graphical session is running; it does not replace visual review on a desktop display.
+
 
