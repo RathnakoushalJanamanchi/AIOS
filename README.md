@@ -21,8 +21,8 @@ Indian AIOS is a proposed Indian-language-first desktop product for Indian PC us
 On Linux or WSL2 with QEMU system emulation, cloud-image-utils, xz, curl, and OpenSSH installed:
 
 ```sh
-./scripts/build-dev-image.sh
-./scripts/run-dev-image.sh
+bash scripts/build-dev-image.sh
+bash scripts/run-dev-image.sh
 ```
 
 The build verifies the official FreeBSD base image SHA-512, provisions XFCE in QEMU, runs guest smoke checks, and emits a compressed QCOW2 image plus build diagnostics. GitHub Actions builds the same image and makes it available as a seven-day workflow artifact.
@@ -41,4 +41,5 @@ python -m unittest discover -s tests -p 'test_*.py'
 ## Ownership and licensing
 
 Project-authored source is licensed under Apache-2.0. FreeBSD and bundled third-party software retain their own licenses, copyrights, and notices. The project will publish component provenance, update responsibility, and data flows; operational ownership and release-key custody must be established before public end-user distribution.
+
 
