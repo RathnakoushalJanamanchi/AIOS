@@ -1,0 +1,28 @@
+#cloud-config
+hostname: indian-aios-dev
+manage_etc_hosts: true
+ssh_pwauth: false
+users:
+  - default
+  - name: aios
+    gecos: Indian AIOS Developer
+    groups: [wheel, video]
+    shell: /bin/sh
+    lock_passwd: true
+    sudo: "ALL=(ALL) NOPASSWD:ALL"
+    ssh_authorized_keys:
+      - __AIOS_SSH_PUBLIC_KEY__
+write_files:
+  - path: /root/aios-bootstrap.sh
+    owner: root:wheel
+    permissions: "0700"
+    encoding: b64
+    content: __AIOS_BOOTSTRAP_B64__
+  - path: /root/aios-smoke-test.sh
+    owner: root:wheel
+    permissions: "0700"
+    encoding: b64
+    content: __AIOS_SMOKE_B64__
+runcmd:
+  - ["/bin/sh", "/root/aios-bootstrap.sh"]
+
