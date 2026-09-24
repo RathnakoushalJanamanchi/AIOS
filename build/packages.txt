@@ -1,0 +1,10 @@
+# FreeBSD package names for the Phase 2 development VM.
+# Keep the package set small: this is a platform smoke image, not the end-user system.
+xorg
+xf86-video-scfb
+xfce
+xfce4-terminal
+lightdm
+lightdm-gtk-greeter
+sudo
+
