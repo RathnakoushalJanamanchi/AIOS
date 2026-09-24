@@ -1,47 +1,54 @@
-# Architecture (initial proposal)
+# Architecture
 
-## Product boundary
+## Current platform decision
 
-Indian AIOS is a complete product: system foundation, desktop, system services, applications/integrations, localization, AI permissions, packaging, updates, installation, recovery, testing, and documentation. It is not just a desktop theme or chatbot.
+Phase 2 uses the FreeBSD 15.1-RELEASE amd64 kernel/base system. This satisfies the product owner's non-Linux requirement while providing a mature x86-64 OS and official QEMU QCOW2 base image. This is a FreeBSD-based product layer, not a new kernel. The current release is a development baseline; a supported branch and upgrade path must be verified before end-user release.
 
 ## Layer model
 
-1. **Platform foundation:** kernel or host OS, boot, drivers, graphics, audio, networking, storage, security primitives.
-2. **System services:** sessions, settings, notifications, search index, software/update service, logs, device management.
-3. **Desktop shell:** launcher, panel/taskbar, window management, accessibility, localization and input integration.
-4. **Applications:** file management, terminal, browser, productivity apps, software catalog.
-5. **AI services:** model adapter, orchestration, retrieval, tool registry, permission broker, audit/undo, user interface.
-6. **Distribution:** reproducible builds, signed artifacts, installer, recovery, release channels, compatibility data.
+1. **Platform foundation:** FreeBSD kernel/base, boot, drivers, graphics, audio, networking, storage, security primitives.
+2. **System services:** sessions, settings, notifications, local search, application/update services, logs, device management.
+3. **Desktop shell:** Indian AIOS launcher, panel/taskbar, window management, accessibility, localization/input.
+4. **Applications:** file manager, terminal, settings, Chromium-based browser integration, LibreOffice, software catalog.
+5. **AI services:** provider adapters, orchestration, retrieval, tools, permission broker, audit/undo, UI.
+6. **Distribution:** pinned/reproducible builds, signed artifacts, installer, recovery, release channels, compatibility data.
 
-These layers communicate through explicit APIs. AI models do not receive direct privileged access; tools request narrowly scoped capabilities from a separate permission broker.
+Layers communicate through versioned APIs. AI models do not receive direct privileged access; tools request narrow capabilities from a separate permission broker.
 
-## Kernel and OS foundation
+## Phase 2 development platform
 
-Unresolved. See [ADR-0001](docs/decisions/0001-system-foundation.md). The project must not claim “not Linux” while shipping a Linux kernel. A Windows-based shell/product layer would depend on a proprietary Windows license and would not constitute an independently developed operating system. A new kernel would require a separate feasibility case for drivers, hardware support, security maintenance, application compatibility, and funding.
+The first QEMU image uses FreeBSD 15.1 UFS, XFCE/Xorg, LightDM, terminal/settings, QEMU virtio storage/network, syslog, and an isolated cloud-init provisioning step. CI validates the image over a host-forwarded SSH port, then stores the resolved package list and serial diagnostics with the bootable artifact.
+
+The image uses an upstream desktop environment as a temporary development shell. The AIOS visual shell is later project work. Phase 2 is a VM development image, not a physical installer.
 
 ## Multilingual design
 
-- Use Unicode end-to-end and avoid language-specific assumptions in core services.
-- Keep translated strings in locale resources with stable keys and source-language context.
-- Keep locale formatting, input methods, fonts, and speech/translation providers behind replaceable interfaces.
-- Track quality and coverage per language; translated UI alone is not a language-support claim.
-- Initial resource samples live under `localization/`.
+- Unicode end-to-end; core services do not hard-code language-specific behavior.
+- Translation resources use stable keys and source-language context.
+- Locale formatting, input methods, fonts, and speech/translation models sit behind replaceable interfaces.
+- Track UI, keyboard, font shaping, search, speech, OCR, and translation quality separately by language.
+- Initial sample resources: en-IN, hi-IN, ta-IN, te-IN.
 
 ## AI trust boundaries
 
-- Model output is untrusted input.
-- Orchestration can only call registered tools.
-- Tools receive explicit, narrow capabilities and validate arguments independently.
-- The permission broker gates sensitive access and operations.
-- The UI shows action summaries and asks for confirmation for consequential changes.
-- Audit events avoid storing secrets and expose retention controls.
-- Network access and remote inference are disclosed and controlled by the user.
+- Model output is untrusted.
+- Orchestration calls only registered tools.
+- Tools validate arguments and permissions independently.
+- A permission broker gates sensitive file/system access and external actions.
+- The UI summarizes operations and confirms destructive, privileged, or externally visible changes.
+- Audit events avoid secrets and expose retention controls.
+- Remote inference is disclosed and user-controlled.
 
-## Provisional technology approach
+## Provisional implementation languages
 
-Do not lock languages or frameworks before the foundation choice. The system should use memory-safe languages for new privileged services where the selected platform and available bindings make that practical; use established native toolkits and system APIs for the desktop; define stable IPC and localization boundaries; and reuse maintained upstream software for commodity capabilities. Each dependency needs a license, security-update, and maintenance review.
+Rust for new privileged services where the selected platform APIs support it; TypeScript for UI and WebExtension surfaces; Python for language/model experiments and developer tools; shell for build/CI. C/C++ remains allowed for upstream APIs/engines. IPC schemas remain language-neutral.
 
-## Design records
+## Build-versus-adapt
 
-- [ADR-0001: system foundation](docs/decisions/0001-system-foundation.md)
+- XFCE is adapted only as the v0.1 engineering shell; develop the AIOS shell separately.
+- Chromium and LibreOffice are upstream integrations, not project-owned forks.
+- Local search is a new AIOS service using SQLite FTS5 behind a tokenizer abstraction; web metasearch is optional and external.
+- AI model runtime is pluggable; policy, tools, and permission broker are project-owned.
+
+See [Phase 1 decisions](docs/PHASE-1-DECISIONS.md), [Phase 2 image guide](docs/PHASE-2-DEV-IMAGE.md), and [ADR-0001](docs/decisions/0001-system-foundation.md).
 
