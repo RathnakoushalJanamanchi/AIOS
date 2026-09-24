@@ -1,23 +1,26 @@
-# Technology options to investigate
+# Technology decisions and continuing research
 
-This is an investigation list, not a selected stack. Evaluate current licenses, maintenance health, security response, hardware support, APIs, and build requirements before adopting a component.
+Phase 1 decisions are captured in [PHASE-1-DECISIONS.md](../docs/PHASE-1-DECISIONS.md). This file tracks selected v0.1 directions and areas still needing validation.
 
-| Area | Candidate direction | Research questions |
+| Area | v0.1 direction | What remains to prove |
 |---|---|---|
-| Kernel/OS base | Linux distribution; licensed Windows product layer; existing non-Linux OS; new kernel | Which interpretation of “not Linux” is required? Which target PCs and drivers are mandatory? Who supplies security updates? |
-| Desktop | Native shell over chosen platform APIs | Toolkit accessibility, localization, windowing, theming, session security, and long-term maintenance |
-| Privileged services | Rust or another memory-safe language where bindings/platform support permit; C/C++ only where necessary | ABI/API stability, IPC, service supervision, sandbox integration, auditability |
-| UI/application layer | TypeScript/web UI or native toolkit depending platform | Resource use, accessibility, localization tooling, packaging, offline behavior, attack surface |
-| Search | Local index first; metasearch or licensed web data later | Indic tokenization/stemming, transliteration, privacy, spam, crawling rights, operational cost |
-| Browser | Maintained Chromium-based build or other supported browser engine | Build size, codecs, update cadence, sandbox, branding/trademark, API keys, security staffing |
-| Office | Integrate/adapt a maintained suite first; add native AI/language workflows | DOCX/XLSX/PPTX compatibility, licensing, accessibility, fonts, macros, file safety |
-| Language technology | Local models plus optional BHASHINI/other services | Per-language benchmarks, API terms, data handling, latency, availability, offline support |
-| AI inference | Pluggable local and explicitly configured remote providers | Hardware classes, model licenses, acceleration APIs, private data handling, fallback behavior |
-| Packaging/updates | Signed repositories and rollback-capable system updates | Atomicity, key custody, recovery, bandwidth, delta support, reproducibility |
-| Installer/recovery | Platform-native installer and recovery image | Secure boot, disk encryption, dual boot, accessibility, rollback and data preservation |
-| CI/test | Reproducible builds, QEMU/virtualization, hardware lab | Emulator fidelity, boot automation, language test coverage, firmware/device matrix |
+| Kernel/OS base | FreeBSD 15.1 amd64, non-Linux | Supported branch migration, installer/recovery, physical-device drivers, secure updates |
+| Desktop | XFCE for development image; original AIOS shell later | Visual design, input/accessibility APIs, shell integration |
+| Privileged system services | Rust where FreeBSD bindings mature | IPC, service supervision, sandbox/capability implementation |
+| UI and browser integrations | TypeScript/WebExtensions | Accessibility, offline behavior, app isolation, browser update channel |
+| Developer and AI tooling | Python for localization/model experimentation | Reproducible dependency lock and model evaluation |
+| Local search | SQLite FTS5 plus replaceable tokenizer/indexer interface | Indic-script normalization, transliteration, ranking, private index policy |
+| Web search | Optional SearXNG or licensed-provider connector | Search provider policy, relevance, privacy, availability, operating cost |
+| Browser | Upstream FreeBSD Chromium package, no Google Chrome branding | Security-update SLAs, codecs, sandbox verification, exact trademark and distribution requirements |
+| Office | Upstream LibreOffice integration | DOCX/XLSX/PPTX compatibility, language/fonts, macro/document threat model |
+| AI runtime | Provider-neutral API; optional llama.cpp local inference | FreeBSD performance/acceleration, model licenses, Indic benchmarks |
+| Packages and updates | FreeBSD pkg for development; signed AIOS layer to design | Immutable repository snapshots, signing keys, rollback, SBOM, CVE response |
+| Image/CI | Official checksum-pinned QCOW2 + QEMU + GitHub Actions | Package lock, deterministic artifact, GUI visual review |
 
-## First research deliverable
+## Dependency/license policy
 
-Complete ADR-0001 with a sourced comparison, list of target devices, realistic build/test steps, license/provenance policy, and explicit non-goals. Avoid selecting several competing frameworks before the platform decision.
+- Project-authored code uses Apache-2.0.
+- Preserve upstream licenses, notices, trademarks, and source attribution.
+- Record exact component version, upstream URL, license ID, source/build input, security owner, and update cadence in an SBOM for each release.
+- Do not embed model weights, fonts, codecs, or firmware until redistribution terms are explicitly reviewed.
 
