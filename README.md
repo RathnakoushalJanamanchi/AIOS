@@ -1,40 +1,44 @@
 # Indian AIOS
 
-Indian AIOS is a proposed, multilingual desktop operating system for Indian users. The project aims to make a secure, accessible PC experience with Indian-language input and services, user-controlled AI, useful productivity workflows, and transparent software ownership.
+Indian AIOS is a proposed Indian-language-first desktop product for Indian PC users. It aims to combine a familiar desktop, local-first search, permissioned AI assistance, productivity apps, accessible language support, and clear software/data provenance.
 
-This repository is at the **planning and feasibility stage**. It does not yet contain an operating system, installer, browser, office suite, or working AI agent. No feature should be described as implemented until it has been built and verified.
+**Current foundation decision:** FreeBSD 15.1-RELEASE for the Phase 2 x86-64/QEMU development image. Indian AIOS is non-Linux; this is a FreeBSD-based product layer, not a new kernel or Windows clone.
 
-## Product direction
+**Current status:** Phase 1 product decisions are recorded. Phase 2 has a QEMU build-and-smoke workflow; its first hosted run is the acceptance gate. It is not yet a physical-PC installer or end-user release.
 
-- Start with a reproducible developer platform and QEMU-based validation.
-- Treat Indian languages, accessibility, privacy, and supported hardware as product foundations.
-- Build the distinctive desktop, permissioned AI layer, localization experience, and integration APIs.
-- Adapt or integrate mature components when that is safer and more maintainable than recreating them.
-- Publish provenance, licenses, update ownership, and data flows for included components.
+## Start here
 
-## Important open decision: system foundation
+- [Complete product overview](docs/product-overview.md)
+- [Phase 1 feasibility and product decisions](docs/PHASE-1-DECISIONS.md)
+- [Phase 2 development image guide](docs/PHASE-2-DEV-IMAGE.md)
+- [Architecture](ARCHITECTURE.md)
+- [Roadmap](ROADMAP.md)
+- [Security policy](SECURITY.md)
+- [Threat model](THREAT_MODEL.md)
 
-The original engineering brief names Linux as the initial kernel foundation. The product request also says Indian AIOS should not be based on Linux. These requirements conflict. The kernel and driver strategy is therefore an open feasibility decision; this repository does not claim a non-Linux foundation or quietly select Linux.
+## Build and run the development VM
 
-See [the architecture](ARCHITECTURE.md), [the roadmap](ROADMAP.md), and [ADR-0001](docs/decisions/0001-system-foundation.md). The first development work is a comparative feasibility study covering a mature Linux distribution, a Windows-based product layer, and a new-kernel path. A new kernel is not assumed to be practical for the first deployable release.
+On Linux or WSL2 with QEMU system emulation, cloud-image-utils, xz, curl, and OpenSSH installed:
 
-## Languages and technology
+```sh
+./scripts/build-dev-image.sh
+./scripts/run-dev-image.sh
+```
 
-The product targets multilingual Indian-language support through Unicode, locale-aware formatting, keyboard and input-method integration, tested fonts, and localized UI resources. Initial sample translations are English, Hindi, Tamil, and Telugu. These samples are not a claim of complete language coverage.
+The build verifies the official FreeBSD base image SHA-512, provisions XFCE in QEMU, runs guest smoke checks, and emits a compressed QCOW2 image plus build diagnostics. GitHub Actions builds the same image and makes it available as a seven-day workflow artifact.
 
-Technology choices for the desktop, system services, AI runtime, browser, office applications, packaging, and installer remain provisional until the foundation study is complete. The project will prefer stable interfaces and documented upstream components over a premature, all-new stack.
+This is a development VM with console auto-login and passwordless sudo. Do not use it for sensitive data or as a production install.
 
-## Repository map
+## Multilingual seed
 
-- `ARCHITECTURE.md` — product boundaries and open architecture decisions
-- `ROADMAP.md` — staged milestones and acceptance criteria
-- `SECURITY.md` — initial security commitments
-- `THREAT_MODEL.md` — initial assets, actors, and boundaries
-- `docs/decisions/` — architecture decision records
-- `localization/` — locale metadata and starter UI strings
-- `research/` — comparative technology evaluation
+The starter UI catalogs cover English (India), Hindi, Tamil, and Telugu. They are not complete translations. Validate keys/placeholders with:
 
-## Current status
+```sh
+python scripts/check_locales.py
+python -m unittest discover -s tests -p 'test_*.py'
+```
 
-**Milestone 0: feasibility and project foundation.** No bootable image or OS implementation exists yet. The next gate is a reviewed system-foundation decision with evidence for kernel, driver, licensing, update, and test strategy.
+## Ownership and licensing
+
+Project-authored source is licensed under Apache-2.0. FreeBSD and bundled third-party software retain their own licenses, copyrights, and notices. The project will publish component provenance, update responsibility, and data flows; operational ownership and release-key custody must be established before public end-user distribution.
 
