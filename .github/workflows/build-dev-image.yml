@@ -1,0 +1,39 @@
+name: Build and smoke-test QEMU development image
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "build/**"
+      - "scripts/build-dev-image.sh"
+      - "scripts/run-dev-image.sh"
+      - ".github/workflows/build-dev-image.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  build-qemu-image:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install QEMU and cloud image tooling
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes qemu-system-x86 qemu-utils cloud-image-utils xz-utils
+      - name: Build and boot the development image
+        env:
+          AIOS_QEMU_HEADLESS: "1"
+          AIOS_QEMU_CPUS: "4"
+          AIOS_QEMU_MEMORY: "4096"
+        run: ./scripts/build-dev-image.sh
+      - name: Upload bootable image and diagnostics
+        uses: actions/upload-artifact@v4
+        with:
+          name: indian-aios-dev-image
+          path: build/artifacts/
+          if-no-files-found: error
+          retention-days: 7
+
