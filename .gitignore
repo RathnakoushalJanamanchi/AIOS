@@ -1,0 +1,7 @@
+# Generated FreeBSD/QEMU image material; do not commit VM disks, keys, or cloud-init seeds.
+build/dev-image-work/
+build/artifacts/
+build/*.qcow2
+build/*.iso
+build/*.xz
+
