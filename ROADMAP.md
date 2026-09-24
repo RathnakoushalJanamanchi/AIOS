@@ -1,65 +1,69 @@
 # Roadmap
 
-Status labels describe verified repository work, not aspirations. Nothing in this roadmap is complete until its acceptance criteria are met and evidence is recorded.
+Status labels refer to implementation and evidence, not aspirations. Phase acceptance is complete only when its stated criteria pass and are recorded.
 
-## Milestone 0 — product and foundation feasibility (current)
+## Phase 1 — feasibility and product decisions
 
-- [x] Record the product goal and expose the Linux versus non-Linux conflict.
-- [x] Establish a multilingual localization seed and initial security boundaries.
-- [ ] Compare Linux-based, Windows-based, and new-kernel approaches for the stated requirements.
-- [ ] Decide target licensing and what “Indian-owned” means operationally.
-- [ ] Select initial hardware targets and a QEMU/VM strategy.
-- [ ] Record the decision and revise milestone 1 based on it.
+**Status: decisions recorded.**
 
-**Exit criteria:** a documented, evidence-backed architecture decision; a realistic initial hardware list; a license/provenance policy; and an agreed development platform.
+- [x] Product definition and measurable ownership promise.
+- [x] Target user groups.
+- [x] Non-Linux kernel direction: FreeBSD 15.1 amd64 for the Phase 2 baseline.
+- [x] Project license/provenance policy.
+- [x] VM and first real-PC evaluation targets.
+- [x] Initial UI language set: en-IN, hi-IN, ta-IN, te-IN.
+- [x] Build/adapt/integrate decisions for desktop, browser, local/web search, AI, and office.
+- [x] Complete OS concept overview and system architecture sketch.
 
-## Milestone 1 — reproducible development platform
+Decision record: [Phase 1 decisions](docs/PHASE-1-DECISIONS.md).
 
-- [ ] Build a reproducible developer image using the selected foundation.
-- [ ] Boot in the selected emulator and collect machine-readable logs.
-- [ ] Provide a graphical desktop, terminal, storage, networking, and basic settings.
-- [ ] Add automated boot and smoke checks.
-- [ ] Document setup, build dependencies, debugging, and known limits.
+## Phase 2 — reproducible development platform
 
-**Exit criteria:** a new developer can follow documented steps to build and boot the image, and smoke checks report results without claiming unsupported hardware coverage.
+**Status: implementation and hosted QEMU acceptance in progress.**
 
-## Milestone 2 — usable desktop shell
+- [x] Pin official FreeBSD 15.1 VM image by SHA-512.
+- [x] Declare desktop package set and automated provisioning.
+- [x] Add QEMU build, launch, and guest smoke-check scripts.
+- [x] Add CI to build/boot the image and publish diagnostics/artifact.
+- [ ] Hosted QEMU workflow succeeds and uploads the image.
+- [ ] Review visual desktop output on a graphical host.
+- [ ] Lock exact third-party package inputs or document the remaining reproducibility limit before calling the build fully reproducible.
 
-- [ ] Login/session lifecycle, launcher, taskbar/panel, windows, notifications.
-- [ ] File manager, settings, display/audio/network/power controls.
-- [ ] Accessibility baseline and localization framework integration.
+Acceptance requires QEMU boot; graphical login/session; terminal, settings, storage, network, logging; smoke checks; and downloadable image/provenance. See [Phase 2 image guide](docs/PHASE-2-DEV-IMAGE.md).
 
-## Milestone 3 — Indian-language foundations
+## Phase 3 — AIOS desktop shell
 
-- [ ] Select initial release languages using user research and quality gates.
-- [ ] Keyboard/input methods, fonts, locale formats, UI translation workflow.
-- [ ] Measure search, OCR, speech, translation, and transliteration quality by language.
-- [ ] Evaluate BHASHINI and other model/service providers for terms, privacy, quality, and offline operation.
+- [ ] Design tokens, shell mockups, accessibility and localization foundations.
+- [ ] Original launcher/taskbar, window/session integrations, system search UI.
+- [ ] File manager and coherent system settings.
+- [ ] User accounts, notifications, clipboard, screenshots, and diagnostics.
 
-## Milestone 4 — AI and system search
+## Phase 4 — Indian-language platform
 
-- [ ] Unified local search for apps, files, settings, and permitted documents.
-- [ ] Model-provider interface separating inference, orchestration, tools, and UI.
-- [ ] Capability-based permissions, action previews, audit trail, undo where possible.
-- [ ] Local inference where supported and remote inference only with clear user choice.
+- [ ] Validate en-IN, hi-IN, ta-IN, te-IN UI, keyboard layouts, fonts, locale formats.
+- [ ] Define add-language review, terminology, quality and accessibility process.
+- [ ] Benchmark Indic search, transliteration, OCR, speech and translation separately.
 
-## Milestone 5 — applications and ecosystem
+## Phase 5 — search, AI, and applications
 
-- [ ] Decide browser strategy and establish security-update ownership.
-- [ ] Decide office productivity strategy and test common document interoperability.
-- [ ] App catalog, signed metadata, permission presentation, install/update/removal.
-- [ ] Developer documentation and optional public-service integrations.
+- [ ] SQLite FTS5 local search with privacy boundaries and Indic tokenization.
+- [ ] Model-provider adapters and permission broker; local/remote inference policies.
+- [ ] Chromium-based browser integration and security update pipeline.
+- [ ] LibreOffice integration, file-format acceptance matrix, language templates.
+- [ ] Signed app catalog, permissions, updates, rollback, SBOM and vulnerability response.
 
-## Milestone 6 — hardware trials and releases
+## Phase 6 — product hardening and releases
 
-- [ ] Test on named, real x86-64 PC models; publish results and known issues.
-- [ ] Installer, recovery media, update rollback, release signing and recovery drills.
-- [ ] Development, beta, release-candidate, and stable channels with release criteria.
+- [ ] Physical PC test matrix for graphics, Wi-Fi, audio, Bluetooth, USB, power, printers.
+- [ ] Signed installer, disk encryption, recovery media, tested upgrade/rollback.
+- [ ] Accessibility, performance, security, localization, and application compatibility gates.
+- [ ] Development, beta, release candidate, and stable channels with support policy.
 
-## Risks and unresolved work
+## Risks and open work
 
-- Kernel and driver strategy is unresolved and conflicts with the original brief.
-- “Indian-owned” needs measurable governance, key custody, data handling, and provenance criteria.
-- A new kernel, full web search index, browser engine, and office suite are each major independent programs.
-- Hardware support, language quality, performance, and update reliability require measured tests; no results are claimed yet.
+- Current FreeBSD binary package repositories move over time; an immutable package snapshot or pinned ports build is needed for bit-for-bit reproducibility.
+- FreeBSD graphics/Wi-Fi coverage differs by device. No universal hardware support claim.
+- FreeBSD 15.1-RELEASE security support ends 2027-03-31; release engineering must test upgrades onto a supported branch well before any product release.
+- Browser engine, office suite, and AI model are integrated upstream components, not original project products.
+- Release-key jurisdiction, legal entity, incident response, public vulnerability contact, and update service need operational owners.
 
